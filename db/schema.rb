@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200324173248) do
+ActiveRecord::Schema.define(version: 20200324182430) do
 
   create_table "places", force: :cascade do |t|
     t.string "name"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20200324173248) do
   create_table "saved_locations", force: :cascade do |t|
     t.integer "user_id"
     t.integer "place_id"
+    t.string  "name"
   end
 
   create_table "users", force: :cascade do |t|
