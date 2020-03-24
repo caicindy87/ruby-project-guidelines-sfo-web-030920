@@ -1,4 +1,4 @@
-class SavedLocations < ActiveRecord::Base
+class SavedLocation < ActiveRecord::Base
     
     belongs_to :place
     belongs_to :user
