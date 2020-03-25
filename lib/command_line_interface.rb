@@ -5,12 +5,13 @@ def hello
     puts 'Hello!'
 end
 
+# check by user_id to see if they have account
 def get_user_name  # saves user's name in string form
     puts 'Please enter your name first'
     user_name = gets.chomp
 end
 
-def get_user_location
+def get_user_location # defining method
     puts 'Next, please enter current address'
     user_location = gets.chomp
 end
@@ -23,7 +24,6 @@ def view_user_info(name) # find user and view user's name and current location b
     User.find_by(name: name)
 end
 
-
 def change_user_location(name, new_user_address)
    if User.find_by(name: name)
         user = User.find_by(name: name)
@@ -33,24 +33,19 @@ def change_user_location(name, new_user_address)
     end
 end
 
-
 def delete_user(name)
     User.find_by(name: name).destroy
 end
 
-
-def start_search
-    puts 'Enter go to find five random places.'
-    user_input = gets.chomp # user input is string data type
-    if user_input ==  "go"                                  # can change user input to integer using .to_i
-        display_five_place_names
-    else
-        # puts "I do not recognize that command. I said enter 'go.' "
-        puts "I said enter 'go.' I'm sorry I thought you could read... "
-        # if the response is not what we want, how do we prevent next methods from running? - need to add custom error
+def get_20_businesses(user_location)
+    return get_businesses_from_yelp_api(user_location).map do |business|
+        business["name"]
     end
 end
 
+def display_five_place_names(businesses, count=0)
+    businesses[count...(count + 5)]
+end
 
 def want_to_save?
     puts "enter 'one' to save option 1"
@@ -61,10 +56,44 @@ def want_to_save?
     puts "enter 'next' to see next five results"
 end
 
-def get_response_to_save_or_not
-    response = gets.chomp
+def start_search(user_location)
+    puts 'Enter go to find five random places.'
+    user_input = gets.chomp # user input is string data type
+    if user_input ==  "go" 
+        businesses = get_20_businesses(user_location)
+        puts display_five_place_names(businesses, 0)
+        want_to_save?
+        get_response_to_save_or_not(businesses, 5)
+        want_to_save?
+        get_response_to_save_or_not(businesses, 10)
+        want_to_save?
+        get_response_to_save_or_not(businesses, 15)
+    else
+        # puts "I do not recognize that command. I said enter 'go.' "
+        puts "I said enter 'go.' I'm sorry I thought you could read... "
+        # if the response is not what we want, how do we prevent next methods from running? - just call method again
+        start_search(user_location)
+    end
 end
 
+def get_response_to_save_or_not(businesses, count)
+    response = gets.chomp
+    if response == 'one'
+        save_option_one
+    elsif response == 'two'
+        save_option_two
+    elsif response == 'three'
+        save_option_three
+    elsif response == 'four'
+        save_option_four
+    elsif response == 'five'
+        save_option_five
+    elsif response == 'next'
+       puts display_five_place_names(businesses, count)
+    end
+end
+
+# when user wants to save location, that is when you create new instance of place and saved_location
 def save_option_one
     option_one = get_businesses_from_yelp_api[0]
     current_user_obj = User.all.last
@@ -114,33 +143,14 @@ end
 
 
 
+def display_saved_locations # display user's saved locations
+    User.all.last.saved_locations
+end
 
+def next_five_results
+end
 
-
-
-
-# def create_saved_location_record
-#     current_user = view_user_info   # view_user_info returns current user record which is saved to variable called current_user
-#     place_to_save = 
-#     SavedLocation(user: current_user.name, place: , name:)
-# end
-
-
-
-
-
-
-# when user wants to save location, that is when you create new instance of place and saved_location
-
-
+# what to do if there are no more results
 # what if they want to save multiple locations?
-
-
-# def display_saved_locations
-# end
-
-
-
-
 
 
