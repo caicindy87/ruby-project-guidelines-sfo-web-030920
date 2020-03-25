@@ -5,7 +5,7 @@ def hello
     puts 'Hello!'
 end
 
-def get_user_name
+def get_user_name  # saves user's name in string form
     puts 'Please enter your name first'
     user_name = gets.chomp
 end
@@ -19,7 +19,7 @@ def create_user(name, user_location)
     User.create(name: name, user_location: user_location)
 end
 
-def view_user_location(name) # find user's current location by entering user's name (name == string)
+def view_user_info(name) # find user and view user's name and current location by entering user's name (name == string)
     User.find_by(name: name)
 end
 
@@ -65,32 +65,65 @@ def get_response_to_save_or_not
     response = gets.chomp
 end
 
+def save_option_one
+    option_one = get_businesses_from_yelp_api[0]
+    current_user_obj = User.all.last
+        place_one = Place.create(name: option_one["name"], address: "#{option_one["location"]["display_address"][0]}, #{option_one["location"]["display_address"][1]}")
+        saved_location_one = SavedLocation.create(user: current_user_obj, place: place_one, name: option_one["name"])
+        saved_location_one
+end
+def save_option_two
+    option_two = get_businesses_from_yelp_api[1]
+        place_two = Place.create(name: option_two["name"], address: "#{option_two["location"]["display_address"][0]}, #{option_two["location"]["display_address"][1]}")
+        saved_location_two = SavedLocation.create(user: current_user_obj, place: place_two, name: option_two["name"])
+        saved_location_two
+end
+def save_option_three
+    option_three = get_businesses_from_yelp_api[2]
+    place_three = Place.create(name: option_three["name"], address: "#{option_three["location"]["display_address"][0]}, #{option_three["location"]["display_address"][1]}")
+    saved_location_three = SavedLocation.create(user: current_user_obj, place: place_three, name: option_three["name"])
+    saved_location_three
+end
+def save_option_four
+    option_four = get_businesses_from_yelp_api[3]
+    place_four = Place.create(name: option_four["name"], address: "#{option_four["location"]["display_address"][0]}, #{option_four["location"]["display_address"][1]}")
+    saved_location_four = SavedLocation.create(user: current_user_obj, place: place_four, name: option_four["name"])
+    saved_location_four
+end
+def save_option_five
+    option_five = get_businesses_from_yelp_api[4]
+    place_five = Place.create(name: option_five["name"], address: "#{option_five["location"]["display_address"][0]}, #{option_five["location"]["display_address"][1]}")
+    saved_location_five = SavedLocation.create(user: current_user_obj, place: place_five, name: option_five["name"])
+    saved_location_five
+end
 
-# create 1 new Place instance / object
-# get_businesses_from_yelp_api returns an array of hashes
 def create_place_record(response)
     if response == 'one'
-        option_one = get_businesses_from_yelp_api[0]
-        Place.create(name: option_one["name"], address: "#{option_one["location"]["display_address"][0]}, #{option_one["location"]["display_address"][1]}")
+        save_option_one
     elsif response == 'two'
-        option_two = get_businesses_from_yelp_api[1]
-        Place.create(name: option_two["name"], address: "#{option_two["location"]["display_address"][0]}, #{option_two["location"]["display_address"][1]}")
+        save_option_two
     elsif response == 'three'
-        option_three = get_businesses_from_yelp_api[2]
-        Place.create(name: option_three["name"], address: "#{option_three["location"]["display_address"][0]}, #{option_three["location"]["display_address"][1]}")
+        save_option_three
     elsif response == 'four'
-        option_four = get_businesses_from_yelp_api[3]
-        Place.create(name: option_four["name"], address: "#{option_four["location"]["display_address"][0]}, #{option_four["location"]["display_address"][1]}")
+        save_option_four
     elsif response == 'five'
-        option_five = get_businesses_from_yelp_api[4]
-        Place.create(name: option_five["name"], address: "#{option_five["location"]["display_address"][0]}, #{option_five["location"]["display_address"][1]}")
+        save_option_five
     end
 end
 
-def create_saved_location_record
-    
-    SavedLocation(user: , place: , name:)
-end
+
+
+
+
+
+
+
+
+# def create_saved_location_record
+#     current_user = view_user_info   # view_user_info returns current user record which is saved to variable called current_user
+#     place_to_save = 
+#     SavedLocation(user: current_user.name, place: , name:)
+# end
 
 
 
@@ -111,23 +144,3 @@ end
 
 
 
-
-
-
-
-    
-
-# if user_input.to_i == 1 # can change user input to integer
-#     puts options[0]
-# elsif user_input.to_i == 2        
-#     puts options[1]
-# elsif user_input.to_i == 3
-#     puts options[2]
-# elsif user_input.to_i == 4
-#     puts options[3]
-# elsif user_input.to_i == 5
-#     puts options[4]
-# else
-#     puts "That's not a correct input number."
-# end
-# end
