@@ -22,8 +22,9 @@ def display_five_place_names
     end
 end
 
-def save_a_location
-    get_businesses_from_yelp_api.each do |business|
-        Place.create(name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}")
-    end
-end
+# def save_a_location
+#     get_businesses_from_yelp_api.each do |business|
+#         Place.create(name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}")
+#     end
+# end
+
