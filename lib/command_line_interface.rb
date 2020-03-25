@@ -3,14 +3,15 @@
 
 def hello
     puts 'Hello!'
-    puts 'Please enter your name and current address (full address)'
 end
 
 def get_user_name
+    puts 'Please enter your name first'
     user_name = gets.chomp
 end
 
 def get_user_location
+    puts 'Next, please enter current address'
     user_location = gets.chomp
 end
 
@@ -18,11 +19,25 @@ def create_user(name, user_location)
     User.create(name: name, user_location: user_location)
 end
 
-def view_user_location
+def view_user_location(name) # find user's current location by entering user's name (name == string)
+    User.find_by(name: name)
 end
 
-def change_user_location
+
+def change_user_location(name, new_user_address)
+   if User.find_by(name: name)
+        user = User.find_by(name: name)
+        user.user_location = new_user_address
+        user.save
+        return user.user_location
+    end
 end
+
+
+def delete_user(name)
+    User.find_by(name: name).destroy
+end
+
 
 def start_search
     puts 'enter 1 to find 5 random places'
