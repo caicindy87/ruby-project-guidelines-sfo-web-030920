@@ -9,6 +9,9 @@ def get_businesses_from_yelp_api
     response_hash = JSON.parse(response_string)["businesses"]
 end
 
+# will need to interpolate user's current location (address) to the URL
+
+
 # add parameters after search by adding ? and then the parameters
 # the address (aka location) is a string
 # if want to add more parameters to search, separate by &
@@ -16,15 +19,17 @@ end
 # limit it to 5 results/outputs (limit parameter)
 # radius in meters
 
+
+
 def display_five_place_names
     get_businesses_from_yelp_api.each do |business|
         puts business["name"] # do we want to just show name and address?
     end
 end
 
-# def save_a_location
-#     get_businesses_from_yelp_api.each do |business|
-#         Place.create(name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}")
-#     end
+# creates 5 new Place instances
+# get_businesses_from_yelp_api.each do |business|
+#    Place.create(name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}")
 # end
+
 

@@ -8,13 +8,9 @@ SavedLocation.delete_all
 
 # s_location = SavedLocation.create( user: user, place: place, name: "SimplexiTea " ) 
                                 
-# s_location.user = user
-
-# user.saved_locations << s_location
-
-# place.saved_locations << s_location
 
 
-get_businesses_from_yelp_api.each do |business|
-    Place.create(name: business["name"], address: business["location"]["display_address"][0] + business["location"]["display_address"][1])
-end
+# can use this to seed database 
+# get_businesses_from_yelp_api.each do |business|
+#     Place.create(name: business["name"], address: business["location"]["display_address"][0] + business["location"]["display_address"][1])
+# end
