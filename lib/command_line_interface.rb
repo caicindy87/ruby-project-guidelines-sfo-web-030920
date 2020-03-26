@@ -72,10 +72,11 @@ def start_search(user_location, user)
         puts display_five_place_names(businesses, 0)
         want_to_save?
         get_response_to_save_or_not(businesses, 5, user)
-        want_to_save?
-        get_response_to_save_or_not(businesses, 10, user)
-        want_to_save?
-        get_response_to_save_or_not(businesses, 15, user)
+
+        # want_to_save?
+        # get_response_to_save_or_not(businesses, 10, user)
+        # want_to_save?
+        # get_response_to_save_or_not(businesses, 15, user)
     else
         puts "I said enter 'go.' I'm sorry I thought you could read... "
         # if the response is not what we want, how do we prevent next methods from running? - just call method again
@@ -87,6 +88,10 @@ def get_response_to_save_or_not(businesses, count, user)
     response = gets.chomp
     if response == 'one'
         save_option_one(businesses, user)
+        # after saving location, user can see next five locations, change their current location, or view saved locations
+        puts 'To see more locations, enter next'
+        puts 'To change your current location, enter change'
+        puts 'To view your saved locations, enter saved'
     elsif response == 'two'
         save_option_two
     elsif response == 'three'
