@@ -24,13 +24,10 @@ def view_user_info(name) # find user and view user's name and current location b
     User.find_by(name: name)
 end
 
-def change_user_location(name, new_user_address)
-   if User.find_by(name: name)
-        user = User.find_by(name: name)
-        user.user_location = new_user_address
-        user.save
-        return user.user_location
-    end
+def change_user_location(user, new_user_address)
+    user.user_location = new_user_address
+    user.save
+    return user.user_location
 end
 
 def delete_user(name)
@@ -49,18 +46,18 @@ end
 #     end
 # end
 
-def display_five_place_names(businesses, count=0)
-    for i in count...(count + 5)
+def display_five_place_names(businesses, num=0)
+    for i in num...(num + 5)
         puts businesses[i][:name]
     end
 end
 
-def want_to_save?
-    puts "enter 'one' to save option 1"
-    puts "enter 'two' to save option 2"
-    puts "enter 'three' to save option 3"
-    puts "enter 'four' to save option 4"
-    puts "enter 'five' to save option 5"
+def want_to_save?(count)
+    puts "enter '#{count}' to save option #{count}"
+    puts "enter '#{count + 1}' to save option #{count + 1}"
+    puts "enter '#{count + 2}' to save option #{count + 2}"
+    puts "enter '#{count + 3}' to save option #{count + 3}"
+    puts "enter '#{count + 4}' to save option #{count + 4}"
     puts "enter 'next' to see next five results"
 end
 
@@ -69,9 +66,9 @@ def start_search(user_location, user)
     user_input = gets.chomp # user input is string data type
     if user_input ==  "go" 
         businesses = get_20_businesses(user_location)  # businesses = array of 20 hashes, each hash has busi name and address
-        puts display_five_place_names(businesses, 0)
-        want_to_save?
-        get_response_to_save_or_not(businesses, 5, user)
+        display_five_place_names(businesses, 0)
+        want_to_save?(1)
+        get_response_to_save_or_not(businesses, 1, 5, user)
 
         # want_to_save?
         # get_response_to_save_or_not(businesses, 10, user)
@@ -80,37 +77,59 @@ def start_search(user_location, user)
     else
         puts "I said enter 'go.' I'm sorry I thought you could read... "
         # if the response is not what we want, how do we prevent next methods from running? - just call method again
-        start_search(user_location)
+        start_search(user_location, user)
     end
 end
 
-def get_response_to_save_or_not(businesses, count, user)
+def get_response_to_save_or_not(businesses, count, num, user)
     response = gets.chomp
-    if response == 'one'
-        save_option_one(businesses, user)
+    if response == "#{count}"
+        save_option(businesses, count, user)
         # after saving location, user can see next five locations, change their current location, or view saved locations
-        puts 'To see more locations, enter next'
-        puts 'To change your current location, enter change'
-        puts 'To view your saved locations, enter saved'
-    elsif response == 'two'
-        save_option_two
-    elsif response == 'three'
-        save_option_three
-    elsif response == 'four'
-        save_option_four
-    elsif response == 'five'
-        save_option_five
+        options_after_saving(businesses, num)
+    elsif response == "#{count + 1}"
+        save_option(businesses, (count + 1), user)
+        options_after_saving(businesses, num)
+    elsif response == "#{count + 2}"
+        save_option(businesses, (count + 2), user)
+    elsif response == "#{count + 3}"
+        save_option(businesses, (count + 3), user)
+    elsif response == "#{count + 4}"
+        save_option(businesses, (count + 4), user)
     elsif response == 'next'
-       puts display_five_place_names(businesses, count)
+        if num == 20
+          puts "These are all available options from this location"
+          puts "To change your current location and start new search, enter change"
+          puts "To view your saved locations, enter saved"
+          puts "To exit app, enter exit"
+        end
+            display_five_place_names(businesses, num)
+            want_to_save?(num + 1)
+            get_response_to_save_or_not(businesses, num + 1, num + 5, user)
     end
 end
 
 # when user wants to save location, that is when you create new instance of place and saved_location
-def save_option_one(businesses, user)
-    first_business_name = businesses[0][:name]
-    first_business_address = businesses[0][:address]
-    place = Place.create(name: first_business_name, address: first_business_address)
-    SavedLocation.create(user_id: user.id, place_id: place.id, name: first_business_name)
+def save_option(businesses, count, user)
+    business_name = businesses[count - 1][:name]
+    business_address = businesses[count -1][:address]
+    place = Place.create(name: business_name, address: business_address)
+    SavedLocation.create(user_id: user.id, place_id: place.id, name: business_name)
+end
+
+def options_after_saving(businesses, num, user)
+    puts 'To see more locations, enter next'
+    puts 'To change your current location, enter change'
+    puts 'To view your saved locations, enter saved'
+    response = gets.chomp
+    if response == "next"
+        display_five_place_names(businesses, num)
+        want_to_save?(6)
+        get_response_to_save_or_not(businesses, 6, 10, user)        
+    elsif response == "change"
+        change_user_location(user, new_user_address)
+    end
+
 end
 
 # def save_option_one
