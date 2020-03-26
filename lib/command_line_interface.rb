@@ -37,14 +37,27 @@ def delete_user(name)
     User.find_by(name: name).destroy
 end
 
-def get_20_businesses(user_location)
+def get_20_businesses_name(user_location) # array of 20 business names
     return get_businesses_from_yelp_api(user_location).map do |business|
-        business["name"]
+       {name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"}
+    end
+end
+
+def get_20_businesses_address(user_location) # array of 20 business addresses
+    return get_businesses_from_yelp_api(user_location).map do |business|
+        "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"
     end
 end
 
 def display_five_place_names(businesses, count=0)
-    businesses[count...(count + 5)]
+    # for i in count...(count + 5)
+    #     puts businesses[i][:name]
+    # end
+    i = 0 
+    while i < 6
+        puts businesses[i][:name]
+        i += 1
+    end
 end
 
 def want_to_save?
@@ -56,18 +69,18 @@ def want_to_save?
     puts "enter 'next' to see next five results"
 end
 
-def start_search(user_location)
+def start_search(user_location, user)
     puts 'Enter go to find five random places.'
     user_input = gets.chomp # user input is string data type
     if user_input ==  "go" 
-        businesses = get_20_businesses(user_location)
+        businesses = get_20_businesses_name(user_location)  # businesses = array of 20 business names
         puts display_five_place_names(businesses, 0)
         want_to_save?
-        get_response_to_save_or_not(businesses, 5)
+        get_response_to_save_or_not(businesses, 5, user_location)
         want_to_save?
-        get_response_to_save_or_not(businesses, 10)
+        get_response_to_save_or_not(businesses, 10, user_location)
         want_to_save?
-        get_response_to_save_or_not(businesses, 15)
+        get_response_to_save_or_not(businesses, 15, user_location)
     else
         # puts "I do not recognize that command. I said enter 'go.' "
         puts "I said enter 'go.' I'm sorry I thought you could read... "
@@ -76,10 +89,10 @@ def start_search(user_location)
     end
 end
 
-def get_response_to_save_or_not(businesses, count)
+def get_response_to_save_or_not(businesses, count, user_location, user)
     response = gets.chomp
     if response == 'one'
-        save_option_one
+        save_option_one(businesses, user_location, user)
     elsif response == 'two'
         save_option_two
     elsif response == 'three'
@@ -94,13 +107,20 @@ def get_response_to_save_or_not(businesses, count)
 end
 
 # when user wants to save location, that is when you create new instance of place and saved_location
-def save_option_one
-    option_one = get_businesses_from_yelp_api[0]
-    current_user_obj = User.all.last
-        place_one = Place.create(name: option_one["name"], address: "#{option_one["location"]["display_address"][0]}, #{option_one["location"]["display_address"][1]}")
-        saved_location_one = SavedLocation.create(user: current_user_obj, place: place_one, name: option_one["name"])
-        saved_location_one
+def save_option_one(businesses, user_location, user)
+    business_addresses = get_20_businesses_address(user_location) 
+    place = Place.create(name: businesses[0], address: businesses_addresses[0])
+    # SavedLocation.create(user_id: user, place_id: place.id , name: )
+    
 end
+
+# def save_option_one
+#     option_one = get_businesses_from_yelp_api[0]
+#     current_user_obj = User.all.last
+#         place_one = Place.create(name: option_one["name"], address: "#{option_one["location"]["display_address"][0]}, #{option_one["location"]["display_address"][1]}")
+#         saved_location_one = SavedLocation.create(user: current_user_obj, place: place_one, name: option_one["name"])
+#         saved_location_one
+# end
 def save_option_two
     option_two = get_businesses_from_yelp_api[1]
         place_two = Place.create(name: option_two["name"], address: "#{option_two["location"]["display_address"][0]}, #{option_two["location"]["display_address"][1]}")
