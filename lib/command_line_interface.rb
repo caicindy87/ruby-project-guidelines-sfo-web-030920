@@ -1,6 +1,5 @@
 # what user sees and will interact with
 
-
 def hello
     puts 'Hello!'
 end
@@ -21,8 +20,10 @@ def create_user(name, user_location)
 end
 
 def view_user_info(user) # find user and view user's name and current location by entering user's name (name == string)
-    puts user.name
-    puts user.user_location
+    puts "------------------------------------"
+    puts "Name: #{user.name}"
+    puts "Location: #{user.user_location}"
+    puts "------------------------------------"
 end
 
 def change_user_location(user, new_user_address)
@@ -106,7 +107,7 @@ def get_response_to_save_or_not(businesses, count, num, user) # count is for the
             get_response_to_save_or_not(businesses, num + 1, num + 5, user)
     elsif response == "view profile"
         view_user_info(user)
-        options_after_seeing_saved_locations(num, user)
+        options_to_start_new_search(num, user)
     else
         puts "That won't do. These are your options: "
         want_to_save?(1)
@@ -135,14 +136,14 @@ def options_after_saving(businesses, num, user)
         start_search(new_user_address, user)
     elsif response == "saved"
         display_saved_locations(user)
-        options_after_seeing_saved_locations(num, user)
+        options_to_start_new_search(num, user)
     else
         puts "Omg you're amazing, but I said these are your options:"
         options_after_saving(businesses, num, user)
     end
 end
 
-def options_after_seeing_saved_locations(num, user)
+def options_to_start_new_search(num, user)
     puts "To start new search with current location, enter 'search'"
     puts "To change your current location and start new search, enter 'change'"
     puts "To exit app, enter 'exit'"
@@ -158,7 +159,7 @@ def options_after_seeing_saved_locations(num, user)
     else
         puts "sigh... I guess you really don't know how to read"
         puts "How did you manage to open the app?"
-        options_after_seeing_saved_locations(num, user)
+        options_to_start_new_search(num, user)
     end
 end
 
