@@ -20,8 +20,9 @@ def create_user(name, user_location)
     User.create(name: name, user_location: user_location)
 end
 
-def view_user_info(name) # find user and view user's name and current location by entering user's name (name == string)
-    User.find_by(name: name)
+def view_user_info(user) # find user and view user's name and current location by entering user's name (name == string)
+    puts user.name
+    puts user.user_location
 end
 
 def change_user_location(user, new_user_address)
@@ -31,7 +32,7 @@ def change_user_location(user, new_user_address)
 end
 
 def get_new_user_location # defining method
-    puts 'Please enter current address'
+    puts 'Please enter a new address'
     user_location = gets.chomp
 end
 
@@ -45,12 +46,6 @@ def get_20_businesses(user_location) # array of 20 business names
     end
 end
 
-# def get_20_businesses_address(user_location) # array of 20 business addresses
-#     return get_businesses_from_yelp_api(user_location).map do |business|
-#         "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"
-#     end
-# end
-
 def display_five_place_names(businesses, num=0)
     for i in num...(num + 5)
         puts businesses[i][:name]
@@ -58,12 +53,13 @@ def display_five_place_names(businesses, num=0)
 end
 
 def want_to_save?(count)
-    puts "enter '#{count}' to save option #{count}"
-    puts "enter '#{count + 1}' to save option #{count + 1}"
-    puts "enter '#{count + 2}' to save option #{count + 2}"
-    puts "enter '#{count + 3}' to save option #{count + 3}"
-    puts "enter '#{count + 4}' to save option #{count + 4}"
-    puts "enter 'next' to see next five results"
+    puts "Enter '#{count}' to save option #{count}"
+    puts "Enter '#{count + 1}' to save option #{count + 1}"
+    puts "Enter '#{count + 2}' to save option #{count + 2}"
+    puts "Enter '#{count + 3}' to save option #{count + 3}"
+    puts "Enter '#{count + 4}' to save option #{count + 4}"
+    puts "Enter 'next' to see next five results"
+    puts "Enter 'view profile' to see user profile"
 end
 
 def start_search(user_location, user)
@@ -108,8 +104,16 @@ def get_response_to_save_or_not(businesses, count, num, user) # count is for the
             display_five_place_names(businesses, num)
             want_to_save?(num + 1)
             get_response_to_save_or_not(businesses, num + 1, num + 5, user)
+    elsif response == "view profile"
+        view_user_info(user)
+        options_after_seeing_saved_locations(num, user)
+    else
+        puts "That won't do. These are your options: "
+        want_to_save?(1)
+        get_response_to_save_or_not(businesses, count, num, user)
     end
 end
+
 
 def options_after_saving(businesses, num, user)
     puts "To see more locations, enter 'next'"
@@ -131,6 +135,30 @@ def options_after_saving(businesses, num, user)
         start_search(new_user_address, user)
     elsif response == "saved"
         display_saved_locations(user)
+        options_after_seeing_saved_locations(num, user)
+    else
+        puts "Omg you're amazing, but I said these are your options:"
+        options_after_saving(businesses, num, user)
+    end
+end
+
+def options_after_seeing_saved_locations(num, user)
+    puts "To start new search with current location, enter 'search'"
+    puts "To change your current location and start new search, enter 'change'"
+    puts "To exit app, enter 'exit'"
+    response = gets.chomp
+    if response == "search"
+        start_search(user.user_location, user)
+    elsif response == "change"
+        new_user_address = get_new_user_location
+        change_user_location(user, new_user_address)
+        start_search(new_user_address, user)
+    elsif response == "exit"
+        puts "Thank you for using our App, bye."
+    else
+        puts "sigh... I guess you really don't know how to read"
+        puts "How did you manage to open the app?"
+        options_after_seeing_saved_locations(num, user)
     end
 end
 
@@ -173,6 +201,10 @@ def last_get_response_to_save_or_not(businesses, count, num, user)
         display_saved_locations(user)
     elsif response == "exit"
         puts "Thank you for using our App, bye."
+    else
+        puts "That won't do. These are your options: "
+        want_to_save?(1)
+        last_get_response_to_save_or_not(businesses, count, num, user)
     end
 end
 
@@ -195,6 +227,10 @@ def last_options_after_saving(businesses, num, user)
         start_search(new_user_address, user)
     elsif response == "saved"
         display_saved_locations(user)
+    else
+        puts "sigh... I guess you really don't know how to read"
+        puts "How did you manage to open the app?"
+        last_options_after_saving(businesses, num, user)
     end
 end
 
@@ -207,73 +243,7 @@ def save_option(businesses, count, user)
 end
 
 
-
 def display_saved_locations(user) # display user's saved locations
     puts all_saved = user.saved_locations.map {|location| location.name}
 end
 
-
-# what to do if there are no more results
-# what if they want to save multiple locations?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def save_option_one
-#     option_one = get_businesses_from_yelp_api[0]
-#     current_user_obj = User.all.last
-#         place_one = Place.create(name: option_one["name"], address: "#{option_one["location"]["display_address"][0]}, #{option_one["location"]["display_address"][1]}")
-#         saved_location_one = SavedLocation.create(user: current_user_obj, place: place_one, name: option_one["name"])
-#         saved_location_one
-# end
-# def save_option_two
-#     option_two = get_businesses_from_yelp_api[1]
-#         place_two = Place.create(name: option_two["name"], address: "#{option_two["location"]["display_address"][0]}, #{option_two["location"]["display_address"][1]}")
-#         saved_location_two = SavedLocation.create(user: current_user_obj, place: place_two, name: option_two["name"])
-#         saved_location_two
-# end
-# def save_option_three
-#     option_three = get_businesses_from_yelp_api[2]
-#     place_three = Place.create(name: option_three["name"], address: "#{option_three["location"]["display_address"][0]}, #{option_three["location"]["display_address"][1]}")
-#     saved_location_three = SavedLocation.create(user: current_user_obj, place: place_three, name: option_three["name"])
-#     saved_location_three
-# end
-# def save_option_four
-#     option_four = get_businesses_from_yelp_api[3]
-#     place_four = Place.create(name: option_four["name"], address: "#{option_four["location"]["display_address"][0]}, #{option_four["location"]["display_address"][1]}")
-#     saved_location_four = SavedLocation.create(user: current_user_obj, place: place_four, name: option_four["name"])
-#     saved_location_four
-# end
-# def save_option_five
-#     option_five = get_businesses_from_yelp_api[4]
-#     place_five = Place.create(name: option_five["name"], address: "#{option_five["location"]["display_address"][0]}, #{option_five["location"]["display_address"][1]}")
-#     saved_location_five = SavedLocation.create(user: current_user_obj, place: place_five, name: option_five["name"])
-#     saved_location_five
-# end
-
-# def create_place_record(response)
-#     if response == 'one'
-#         save_option_one
-#     elsif response == 'two'
-#         save_option_two
-#     elsif response == 'three'
-#         save_option_three
-#     elsif response == 'four'
-#         save_option_four
-#     elsif response == 'five'
-#         save_option_five
-#     end
-# end
