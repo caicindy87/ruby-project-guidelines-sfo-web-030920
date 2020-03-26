@@ -37,26 +37,21 @@ def delete_user(name)
     User.find_by(name: name).destroy
 end
 
-def get_20_businesses_name(user_location) # array of 20 business names
+def get_20_businesses(user_location) # array of 20 business names
     return get_businesses_from_yelp_api(user_location).map do |business|
        {name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"}
     end
 end
 
-def get_20_businesses_address(user_location) # array of 20 business addresses
-    return get_businesses_from_yelp_api(user_location).map do |business|
-        "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"
-    end
-end
+# def get_20_businesses_address(user_location) # array of 20 business addresses
+#     return get_businesses_from_yelp_api(user_location).map do |business|
+#         "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"
+#     end
+# end
 
 def display_five_place_names(businesses, count=0)
-    # for i in count...(count + 5)
-    #     puts businesses[i][:name]
-    # end
-    i = 0 
-    while i < 6
+    for i in count...(count + 5)
         puts businesses[i][:name]
-        i += 1
     end
 end
 
@@ -73,26 +68,25 @@ def start_search(user_location, user)
     puts 'Enter go to find five random places.'
     user_input = gets.chomp # user input is string data type
     if user_input ==  "go" 
-        businesses = get_20_businesses_name(user_location)  # businesses = array of 20 business names
+        businesses = get_20_businesses(user_location)  # businesses = array of 20 hashes, each hash has busi name and address
         puts display_five_place_names(businesses, 0)
         want_to_save?
-        get_response_to_save_or_not(businesses, 5, user_location)
+        get_response_to_save_or_not(businesses, 5, user)
         want_to_save?
-        get_response_to_save_or_not(businesses, 10, user_location)
+        get_response_to_save_or_not(businesses, 10, user)
         want_to_save?
-        get_response_to_save_or_not(businesses, 15, user_location)
+        get_response_to_save_or_not(businesses, 15, user)
     else
-        # puts "I do not recognize that command. I said enter 'go.' "
         puts "I said enter 'go.' I'm sorry I thought you could read... "
         # if the response is not what we want, how do we prevent next methods from running? - just call method again
         start_search(user_location)
     end
 end
 
-def get_response_to_save_or_not(businesses, count, user_location, user)
+def get_response_to_save_or_not(businesses, count, user)
     response = gets.chomp
     if response == 'one'
-        save_option_one(businesses, user_location, user)
+        save_option_one(businesses, user)
     elsif response == 'two'
         save_option_two
     elsif response == 'three'
@@ -107,11 +101,11 @@ def get_response_to_save_or_not(businesses, count, user_location, user)
 end
 
 # when user wants to save location, that is when you create new instance of place and saved_location
-def save_option_one(businesses, user_location, user)
-    business_addresses = get_20_businesses_address(user_location) 
-    place = Place.create(name: businesses[0], address: businesses_addresses[0])
-    # SavedLocation.create(user_id: user, place_id: place.id , name: )
-    
+def save_option_one(businesses, user)
+    first_business_name = businesses[0][:name]
+    first_business_address = businesses[0][:address]
+    place = Place.create(name: first_business_name, address: first_business_address)
+    SavedLocation.create(user_id: user.id, place_id: place.id, name: first_business_name)
 end
 
 # def save_option_one
