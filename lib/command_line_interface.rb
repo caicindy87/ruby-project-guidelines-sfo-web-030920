@@ -80,6 +80,7 @@ def start_search(user_location, user)
     puts "Enter 'Go' to find five random places."
     puts "Enter 'View Profile' to see user profile"
     puts "Enter 'Saved' to view your saved locations"
+    puts "Enter 'Exit' to exit app"
     puts "------------------------------------"
     response = gets.chomp # user input is string data type
     if response == "go" || response == "Go" || response == "GO"
@@ -93,6 +94,10 @@ def start_search(user_location, user)
     elsif response == "saved" || response == "Saved" || response == "SAVED"
         display_saved_locations(user)
         start_search(user_location, user)
+    elsif response == "exit" || response == "Exit" || response == "EXIT"
+        puts "------------------------------------"
+        puts "Thank you for using our App, bye."
+        puts "------------------------------------"
     else
         puts "------------------------------------"
         puts "I said enter 'Go.' I'm sorry I thought you could read... "
