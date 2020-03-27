@@ -5,8 +5,6 @@ require_relative '../config/environment'
 #puts "HELLO WORLD"
 
 
-# calls functions that are written in command-line-interface file
-
 hello
 user_name = get_user_name
 user_location = get_user_location

@@ -1,12 +1,12 @@
-# what user sees and will interact with
-
 def hello
-    puts 'Hello!'
+    puts "------------------------------------"
+    puts "Hello! This app will show you a total of 20 different locations based on your current location. You can save any of the locations that seem interesting to you."
 end
 
 def get_user_name  # saves user's name in string form
     puts "------------------------------------"
     puts 'Please enter your name:'
+    puts 'Note: Please remember this name to log in later'
     puts "------------------------------------"
     user_name = gets.chomp
 end
@@ -50,12 +50,13 @@ def delete_user(user)
     user.destroy
 end
 
-def get_20_businesses(user_location) # array of 20 business names
+def get_20_businesses(user_location) # array of 20 hashes, each containing a business name and address
     return get_businesses_from_yelp_api(user_location).map do |business|
        {name: business["name"], address: "#{business["location"]["display_address"][0]}, #{business["location"]["display_address"][1]}"}
     end
 end
 
+# displays the first 5 places to user
 def display_five_place_names(businesses, num=0)
     for i in num...(num + 5)
         puts "#{i + 1} - #{businesses[i][:name]}"
@@ -147,7 +148,7 @@ def get_response_to_save_or_not(businesses, count, num, user) # count is for the
     end
 end
 
-
+# after a user saves a location, they see these options
 def options_after_saving(businesses, num, user)
     puts "------------------------------------"
     puts "To see more locations, enter 'Next'"
@@ -178,6 +179,7 @@ def options_after_saving(businesses, num, user)
     end
 end
 
+# gives user option to start new search with current address or new search with new address or exit app
 def options_to_start_new_search(user)
     puts "------------------------------------"
     puts "To start new search with current location, enter 'Search'"
@@ -204,6 +206,7 @@ def options_to_start_new_search(user)
     end
 end
 
+# options when user reaches places 16 - 20. different from when user viewing places 1 - 15
 def last_want_to_save?(count)
     puts "------------------------------------"
     puts "enter '#{count}' to save _ #{count}"
@@ -219,6 +222,7 @@ def last_want_to_save?(count)
     puts "------------------------------------"
 end
 
+# captures response of user when they are viewing the last 5 places
 def last_get_response_to_save_or_not(businesses, count, num, user)
     response = gets.chomp
     if response == "#{count}"
@@ -261,6 +265,7 @@ def last_get_response_to_save_or_not(businesses, count, num, user)
     end
 end
 
+# options users get when they save any of places 16-20
 def last_options_after_saving(businesses, num, user)
     puts "------------------------------------"
     puts "To change your current location and start new search, enter 'Change'"
@@ -299,8 +304,8 @@ def save_option(businesses, count, user)
     saved_location = SavedLocation.create(user_id: user.id, place_id: place.id, name: business_name)
 end
 
-
-def display_saved_locations(user) # display user's saved locations
+# display user's saved locations
+def display_saved_locations(user) 
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
     puts ""
     all_saved = user.saved_locations.map {|location| location.name}
@@ -312,5 +317,3 @@ def display_saved_locations(user) # display user's saved locations
     puts ""
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 end
-
-# "* * * * * * * * * * * * * * * * * * *"
