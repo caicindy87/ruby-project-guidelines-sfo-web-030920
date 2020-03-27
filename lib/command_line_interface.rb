@@ -4,7 +4,6 @@ def hello
     puts 'Hello!'
 end
 
-# check by user_id to see if they have account
 def get_user_name  # saves user's name in string form
     puts "------------------------------------"
     puts 'Please enter your name:'
@@ -22,9 +21,7 @@ end
 def create_user(name, user_location)
     user = User.find_or_create_by(name: name)
     user.update(user_location: user_location)
-    # binding.pry
     user
-    # User.create(name: name, user_location: user_location)
 end
 
 def view_user_info(user) # find user and view user's name and current location by entering user's name (name == string)
@@ -32,7 +29,6 @@ def view_user_info(user) # find user and view user's name and current location b
     puts ""
     puts "Name: #{user.name}"
     puts "Location: #{user.user_location}"
-    
     puts ""
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 end
@@ -51,11 +47,7 @@ def get_new_user_location # defining method
 end
 
 def delete_user(user)
-    puts "To permanently delete user, enter 'Delete User'"
-    response = gets.chomp
-    if response == "delete user" || response == "Delete User" || response == "DELETE USER"
-     user.destroy
-    else
+    user.destroy
 end
 
 def get_20_businesses(user_location) # array of 20 business names
@@ -218,6 +210,7 @@ def last_want_to_save?(count)
     puts "To change your current location and start new search, enter 'Change'"
     puts "To view your saved locations, enter 'Saved'"
     puts "To exit app, enter 'Exit'"
+    puts "To permanently delete user and exit app, enter 'Delete User'"
     puts "------------------------------------"
 end
 
@@ -249,6 +242,11 @@ def last_get_response_to_save_or_not(businesses, count, num, user)
     elsif response == "exit" || response == "Exit" || response == "EXIT"
         puts "------------------------------------"
         puts "Thank you for using our App, bye."
+        puts "------------------------------------"
+    elsif response == "delete user" || response == "Delete User" || response == "DELETE USER"
+        puts "------------------------------------"
+        puts "Thank you for using our App, bye."
+        delete_user(user)
         puts "------------------------------------"
     else
         puts "------------------------------------"
@@ -300,7 +298,12 @@ end
 def display_saved_locations(user) # display user's saved locations
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
     puts ""
-    puts all_saved = user.saved_locations.map {|location| location.name}
+    all_saved = user.saved_locations.map {|location| location.name}
+    if all_saved.length == 0
+        puts "** There are currently no saved locations **"
+    else
+        puts all_saved
+    end
     puts ""
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 end
