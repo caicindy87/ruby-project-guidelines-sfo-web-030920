@@ -20,13 +20,20 @@ def get_user_location # defining method
 end
 
 def create_user(name, user_location)
-    User.create(name: name, user_location: user_location)
+    user = User.find_or_create_by(name: name)
+    user.update(user_location: user_location)
+    # binding.pry
+    user
+    # User.create(name: name, user_location: user_location)
 end
 
 def view_user_info(user) # find user and view user's name and current location by entering user's name (name == string)
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
+    puts ""
     puts "Name: #{user.name}"
     puts "Location: #{user.user_location}"
+    
+    puts ""
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 end
 
@@ -43,8 +50,12 @@ def get_new_user_location # defining method
     user_location = gets.chomp
 end
 
-def delete_user(name)
-    User.find_by(name: name).destroy
+def delete_user(user)
+    puts "To permanently delete user, enter 'Delete User'"
+    response = gets.chomp
+    if response == "delete user" || response == "Delete User" || response == "DELETE USER"
+     user.destroy
+    else
 end
 
 def get_20_businesses(user_location) # array of 20 business names
@@ -68,6 +79,7 @@ def want_to_save?(count)
     puts "Enter '#{count + 4}' to save option #{count + 4}"
     puts "Enter 'Next' to see next five results"
     puts "Enter 'View Profile' to see user profile"
+    puts "Enter 'Saved' to view your saved locations"
     puts "------------------------------------"
 end
 
@@ -75,6 +87,7 @@ def start_search(user_location, user)
     puts "------------------------------------"
     puts "Enter 'Go' to find five random places."
     puts "Enter 'View Profile' to see user profile"
+    puts "Enter 'Saved' to view your saved locations"
     puts "------------------------------------"
     response = gets.chomp # user input is string data type
     if response == "go" || response == "Go" || response == "GO"
@@ -85,6 +98,9 @@ def start_search(user_location, user)
     elsif response == "view profile" || response == "View Profile" || response == "VIEW PROFILE"
         view_user_info(user)
         options_to_start_new_search(user)
+    elsif response == "saved" || response == "Saved" || response == "SAVED"
+        display_saved_locations(user)
+        start_search(user_location, user)
     else
         puts "------------------------------------"
         puts "I said enter 'Go.' I'm sorry I thought you could read... "
@@ -122,6 +138,9 @@ def get_response_to_save_or_not(businesses, count, num, user) # count is for the
             get_response_to_save_or_not(businesses, num + 1, num + 5, user)
     elsif response == "view profile" || response == "View Profile" || response == "VIEW PROFILE"
         view_user_info(user)
+        options_to_start_new_search(user)
+    elsif response == "saved" || response == "Saved" || response == "SAVED"
+        display_saved_locations(user)
         options_to_start_new_search(user)
     else
         puts "------------------------------------"
@@ -221,7 +240,6 @@ def last_get_response_to_save_or_not(businesses, count, num, user)
         save_option(businesses, (count + 4), user)
         last_options_after_saving(businesses, num, user)
     elsif response == "change" || response == "Change" || response == "CHANGE"
-        # change method
         new_user_address = get_new_user_location
         change_user_location(user, new_user_address)
         start_search(new_user_address, user)
@@ -281,7 +299,9 @@ end
 
 def display_saved_locations(user) # display user's saved locations
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
+    puts ""
     puts all_saved = user.saved_locations.map {|location| location.name}
+    puts ""
     puts "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 end
 
